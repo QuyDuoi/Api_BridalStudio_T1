@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 mongoose.set('strictQuery', true);
 const local = 'mongodb://127.0.0.1:27017/BridalStudioDb';
 const atlas =
-  'mongodb+srv://taiKhoan:matKhau@atlascluster.wgpzrhs.mongodb.net/link"';
+  'mongodb+srv://taiKhoan:matKhau@atlascluster.wgpzrhs.mongodb.net/DatabaseName"';
 const connect = async() => {
     try {
         await mongoose.connect(local,
