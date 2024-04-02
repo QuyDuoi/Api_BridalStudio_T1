@@ -2,13 +2,13 @@ const mongoose = require('mongoose');
 const Scheme = mongoose.Schema;
 
 const NhanViens = new Scheme({
-    tenNhanVien: {type: String},
-    vaiTro: {type: Number},
-    email: {type: String},
-    soDienThoai: {type: String},
-    taiKhoan: {type: String},
-    matKhau: {type: String},
-    trangThai: {type: Number},
+    tenNhanVien: {type: String, require: true},
+    vaiTro: {type: Number, require: true},
+    email: {type: String, require: true},
+    soDienThoai: {type: String, require: true},
+    taiKhoan: {type: String, require: true},
+    matKhau: {type: String, require: true},
+    trangThai: {type: Number, require: true},
     // hinhAnh: {type: String}
 }, {
     timestamps: true

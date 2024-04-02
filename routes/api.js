@@ -41,22 +41,17 @@ router.post("/themNhanVien", async (req, res) => {
 });
 
 router.get("/layDanhSachNhanVien", async (req, res) => {
-    try {
-      const danhSachNhanVien = await NhanViens.find();
-      res.json({
-        status: 200,
-        messenger: "Lấy danh sách nhân viên thành công",
-        data: danhSachNhanVien,
-      });
-    } catch (error) {
-      console.log(error);
-      res.json({
-        status: 400,
-        messenger: "Lỗi khi lấy danh sách nhân viên",
-        data: [],
-      });
-    }
-  });
+  try {
+    const danhSachNhanVien = await NhanViens.find().sort({ updatedAt: -1 });
+    res.json(danhSachNhanVien);
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      message: "Lỗi khi lấy danh sách nhân viên",
+      data: [],
+    });
+  }
+});
   
   router.put("/capNhatThongTinNV/:id", async (req, res) => {
     try {
@@ -110,6 +105,36 @@ router.get("/layDanhSachNhanVien", async (req, res) => {
         messenger: "Lỗi khi xóa nhân viên",
         data: [],
       });
+    }
+  });
+
+  router.post("/dangNhap", async (req, res) => {
+    try {
+      const { taiKhoan, matKhau } = req.body;
+      const user = await NhanViens.findOne({ taiKhoan, matKhau }).select('-matKhau');
+      if (user) {
+        const token = JWT.sign({ id: user._id }, SECRETKEY, { expiresIn: "1h" });
+
+        const refreshToken = JWT.sign({ id: user._id }, SECRETKEY, {
+          expiresIn: "1d",
+        });
+
+        res.json({
+          status: 200,
+          messenger: "Đăng nhập thành công",
+          data: user,
+          token: token,
+          refreshToken: refreshToken,
+        });
+      } else {
+        res.json({
+          status: 400,
+          messenger: "Tài khoản hoặc mật khẩu không chính xác!",
+          data: [],
+        });
+      }
+    } catch (error) {
+      console.log(error);
     }
   });
 
@@ -215,7 +240,29 @@ router.get("/layDanhSachNhanVien", async (req, res) => {
             data: [],
         });
     }
+  });
+
+  router.get("/layDsKhTheoIDNhanVien/:idNhanVien", async (req, res) => {
+    try {
+        const { idNhanVien } = req.params;
+
+        const danhSachKhachHang = await KhachHangs.find({ idNhanVien: idNhanVien });
+
+        res.json({
+            status: 200,
+            messenger: "Lấy danh sách khách hàng theo ID nhân viên thành công",
+            data: danhSachKhachHang,
+        });
+    } catch (error) {
+        console.log(error);
+        res.json({
+            status: 400,
+            messenger: "Lỗi khi lấy danh sách khách hàng",
+            data: [],
+        });
+    }
 });
+
 
 router.post("/taoKhachHang", async (req, res) => {
     try {
